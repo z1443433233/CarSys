@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- spring 基本配置 -->
+    <!-- 组件扫描 -->
+    <context:component-scan base-package="com.qfedu"/>
+
+    <!-- 数据源 -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="driverClassName"
+                  value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl"
+                  value="jdbc:mysql://localhost:3306/car_sys?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123"/>
+
+        <property name="maximumPoolSize" value="10"/>
+        <property name="minimumIdle" value="10"/>
+        <property name="maxLifetime" value="1800000"/>
+    </bean>
+
+    <!-- 事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 启用注解驱动的事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+    <!-- Spring MVC 基本配置 -->
+    <!-- 启用注解驱动的MVC，会配置特殊性的组件 -->
+    <mvc:annotation-driven/>
+
+    <!-- 处理静态资源请求 -->
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+
+    <!-- 配置视图解析器，主要是前后缀 -->
+    <mvc:view-resolvers>
+        <mvc:jsp prefix="/WEB-INF/jsp/" suffix=".jsp"/>
+    </mvc:view-resolvers>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/user/orderTable"/>
+            <mvc:mapping path="/user/orderTable#"/>
+            <mvc:mapping path="/user/myInfo"/>
+            <mvc:exclude-mapping path="/resources/**"/>
+            <bean class="com.qfedu.Interceptor.Interceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
+
+    <!-- Mybatis 基本配置 -->
+    <!-- sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+
+    <!-- 扫描指定包下的 Dao 接口，实现 Dao 接口的代理 -->
+    <bean id="mapperScanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.qfedu.dao"/>
+    </bean>
+
+
+
+</beans>

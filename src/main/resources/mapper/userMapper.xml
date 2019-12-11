@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qfedu.dao.UserDao">
+    <resultMap id="userMap" type="com.qfedu.pojo.User">
+        <id property="userId" column="id"/>
+        <result property="tel" column="tel"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="invitation" column="invitation"/>
+    </resultMap>
+
+    <resultMap id="ordersMap" type="com.qfedu.pojo.Order">
+        <id property="orderId" column="id"/>
+        <result property="userId" column="uid"/>
+        <result property="cId" column="cid"/>
+        <result property="getId" column="getid"/>
+        <result property="backId" column="backid"/>
+        <result property="oPrice" column="oprice"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <resultMap id="carMap" type="com.qfedu.pojo.Car">
+        <id property="id" column="id"/>
+        <result property="carName" column="name"/>
+        <result property="carType" column="type"/>
+        <result property="carSitnum" column="sitnum"/>
+        <result property="cityId" column="cid"/>
+        <result property="carPrice" column="price"/>
+        <result property="carNumber" column="number"/>
+        <result property="carPicture" column="picture"/>
+    </resultMap>
+
+    <resultMap id="cityMap" type="com.qfedu.pojo.City">
+        <id property="cityId" column="id"/>
+        <result property="cityName" column="name"/>
+        <result property="pid" column="pid"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into car_sys.sys_user(tel, password, email, invitation)
+        values (#{tel}, #{password}, #{email}, #{invitation})
+    </insert>
+
+    <select id="getCar" resultMap="carMap">
+        select *
+        from car_sys.sys_car
+        where car_sys.sys_car.id = #{id}
+    </select>
+
+    <update id="updateUser">
+        update car_sys.sys_user
+        <set>
+            <if test="null != tel">
+                car_sys.sys_user.tel = #{tel},
+            </if>
+            <if test="null != password">
+                car_sys.sys_user.password = #{password},
+            </if>
+            <if test="null != email">
+                car_sys.sys_user.email = #{email}
+            </if>
+        </set>
+        where car_sys.sys_user.id = #{userId}
+    </update>
+
+    <select id="getUserById" resultMap="userMap">
+        select *
+        from car_sys.sys_user where car_sys.sys_user.id = #{userId};
+    </select>
+
+
+    <select id="getCity" resultMap="cityMap">
+        select *
+        from car_sys.sys_city
+        where car_sys.sys_city.id = #{cityId};
+    </select>
+
+    <select id="getOrder" resultMap="ordersMap">
+        select *
+        from car_sys.sys_order
+        where uid = #{userId}
+    </select>
+
+    <select id="login" resultMap="userMap">
+        select *
+        from car_sys.sys_user
+        where tel = #{tel}
+    </select>
+
+    <!--<select id="list" resultMap="ordersMap">
+        select
+            car_sys.sys_order.id,
+            car_sys.sys_order.oprice,
+            car_sys.sys_car.name,
+            car_sys.sys_city.name,
+            car_sys.sys_city.name,
+            car_sys.sys_order.status
+        from car_sys.sys_order
+                 left join car_sys.sys_car on car_sys.sys_order.cid = car_sys.sys_car.id
+                 left join car_sys.sys_city on car_sys.sys_order.getid = car_sys.sys_city.id and
+                                               car_sys.sys_order.backid = car_sys.sys_city.id
+        where car_sys.sys_order.uid = #{userId}
+        order by car_sys.sys_order.id desc limit #{startIndex},#{pageSize};
+    </select>-->
+
+    <select id="list" resultMap="ordersMap">
+        select *
+        from car_sys.sys_order
+        where car_sys.sys_order.uid = #{userId}
+        order by car_sys.sys_order.id desc
+        limit #{startIndex},#{pageSize}
+    </select>
+
+
+    <select id="listCount" resultType="int">
+        select count(car_sys.sys_order.id)
+        from car_sys.sys_order where car_sys.sys_order.uid = #{userId}
+    </select>
+    
+    
+    <select id="getStop" resultMap="cityMap">
+        select *
+        from car_sys.sys_city where car_sys.sys_city.pid = #{cityId}
+    </select>
+
+    <!-- 通过取车点的Id，获取到取车点的所有汽车信息，并且根据租金价格进行升序排序 -->
+    <select id="getCarByCityIdOrderByPrice" resultMap="carMap">
+        select *
+        from car_sys.sys_car where car_sys.sys_car.cid = #{cityId} order by car_sys.sys_car.price
+    </select>
+
+    <!-- 通过取车点的Id，获取到取车点的所有汽车信息，并且根据汽车数量进行升序排序 -->
+    <select id="getCarByCityIdOrderByNumber" resultMap="carMap">
+        select *
+        from car_sys.sys_car where car_sys.sys_car.cid = #{cityId} order by car_sys.sys_car.number
+    </select>
+
+    <!-- 用户下订单   -->
+    <insert id="insertOrder">
+        insert into car_sys.sys_order(cid, uid, getid, backid, oprice, status)
+        values (#{cId}, #{userId}, #{getId}, #{backId}, #{oPrice}, #{status})
+    </insert>
+
+<!-- 用户删除已还车的订单   -->
+    <delete id="deleteByOrderId">
+        delete from car_sys.sys_order where car_sys.sys_order.id = #{orderId}
+    </delete>
+
+
+<!-- 用户还车   -->
+    <update id="updateOrderStatus">
+        update car_sys.sys_order set car_sys.sys_order.status = #{status} where car_sys.sys_order.id = #{orderId}
+    </update>
+</mapper>
