@@ -33,9 +33,14 @@ public interface UserService {
 
     Car getCar(int id);
 
-    void insertOrder(Order order);
+    int insertOrder(Order order);
 
     void deleteByOrderId(Order order);
 
-    void updateOrderStatus(Order order);
+    int updateOrderStatus(Order order);
+
+    Order orderMsg(int id);
+
+    User getUserByEmailAndTel(User user);
+
 }

@@ -30,7 +30,13 @@ public class userController {
     @Autowired
     private UserService userService;
 
-    // 用户登录方法
+    /**
+     * 用户登录的方法，登录成功后会把用户的登录信息存放到session中
+     *
+     * @param user 用户对象，存放的有用户的基本信息
+     * @param model 数据转发前端
+     * @return 返回值为String类型，返回到登录成功或失败的页面
+     */
     @RequestMapping("/login")
     public String login(User user, Model model, HttpSession session) {
         User userLogin = userService.login(user.getTel());
@@ -44,7 +50,45 @@ public class userController {
         }
     }
 
-    // 用户退出登录的方法
+    /**
+     * 跳转找回密码页面
+     *
+     * @return 返回值为String类型，跳转到页面
+     */
+    @RequestMapping("/findPassword")
+    public String findPassword(){
+        return "findPassword";
+    }
+
+    /**
+     * 用户忘记密码，通过邮箱和手机号找回密码
+     *
+     * @param user user对象，前端传输的用户输入数据，包含的是账号和密码
+     * @return 返回值类型为JsonBean，其中包含了code状态码和info详情
+     */
+    @RequestMapping("/getUserByEmailAndTel")
+    @ResponseBody
+    public JsonBean getUserByEmailAndTel(User user) {
+        JsonBean bean = null;
+
+        // 通过邮箱和手机号查找用户信息
+        User user1 = userService.getUserByEmailAndTel(user);
+
+        if (null == user1){
+            bean = JsonUtils.createJsonBean(-1, "手机号或邮箱错误，请核实后重试");
+            return bean;
+
+        }
+        bean = JsonUtils.createJsonBean(1, user1);
+
+        return bean;
+    }
+
+    /**
+     * 用户退出登录的方法
+     * @param req request请求
+     * @return 返回值为String类型，返回到页面
+     */
     @RequestMapping("/logout")
     public String logOut(HttpServletRequest req) {
         // 关闭 session
@@ -59,6 +103,12 @@ public class userController {
         return "login";
     }
 
+    /**
+     * 通过用户Id查询到用户的个人信息
+     *
+     * @param userId 用户的Id
+     * @return 返回值为User对象，包含了用户的账号、密码、邮箱
+     */
     @RequestMapping("/getUserById")
     @ResponseBody
     public User getUserById (int userId) {
@@ -66,35 +116,69 @@ public class userController {
     }
 
 
-    // 用户在登录界面点击注册跳转到注册界面
+    /**
+     * 用户在登录界面点击注册跳转到注册界面
+     *
+     * @return 返回值为String类型，跳转到insert页面
+     */
     @RequestMapping("/register")
     public String register() {
         return "insert";
     }
 
-    // 新用户注册
+    /**
+     * 新用户注册的方法
+     *
+     * @param user user对象，包含前端发送用户的注册信息
+     * @param model 后端向前端发送数据信息
+     * @return 返回值为String类型，跳转到注册成功或失败的页面
+     */
     @RequestMapping("/insert")
-    public String insert(User user) {
-        userService.insert(user);
-        return "login";
+    public String insert(User user, Model model) {
+        User user1 = userService.login(user.getTel());
+
+        if (null == user1){
+            userService.insert(user);
+            return "login";
+        } else {
+            model.addAttribute("msg", "该账号已被注册");
+            model.addAttribute("user", user);
+            return "insert";
+        }
     }
 
-    // 用户修改个人信息
-    @RequestMapping("/updateUser")
+    /**
+     * 用户修改密码
+     *
+     * @param user user对象，包含了用户的密码
+     * @param req request请求
+     * @return 返回值为JsonBean对象，包含了code状态码和info详情
+     */
+    @RequestMapping("/updatePassword")
     @ResponseBody
-    public int updateUser(User user,HttpServletRequest req) {
+    public JsonBean updatePassword(User user,HttpServletRequest req){
         HttpSession session = req.getSession(false);
 
+        JsonBean bean = null;
+
+        if (user.getPassword() != null){
+            if (user.getPassword().length() < 6 || user.getPassword().length() > 12){
+                bean = JsonUtils.createJsonBean(-1,"密码应为6~12位数字或字母，请确认后重试");
+                return bean;
+            }
+        }
+
         User user1 = (User) session.getAttribute("users");
+
         int userId = user1.getUserId();
+
+        user.setUserId(userId);
+        userService.updateUser(user);
 
         if (0 != user1.getUserId() || null != user1.getTel() || null != user1.getPassword() || null != user1.getEmail()) {
             // 使上一个 session 失效
             session.invalidate();
         }
-
-        user.setUserId(userId);
-        userService.updateUser(user);
 
         User user2 = userService.getUserById(userId);
 
@@ -102,15 +186,43 @@ public class userController {
 
         session1.setAttribute("users", user2);
 
-        if (user1.getTel().equals(user2.getTel()) || user1.getEmail().equals(user2.getEmail()) ||
-                user1.getPassword().equals(user2.getPassword())) {
-            return 1;
-        } else {
-            return -1;
-        }
+        bean = JsonUtils.createJsonBean(1, "密码修改成功");
+
+        return bean;
     }
 
-    // 跳转登陆界面的方法
+    /**
+     * 用户修改手机号或邮箱
+     *
+     * @param user user对象，存放的是用户要修改的手机号或邮箱
+     * @param req request请求
+     * @return 返回值为String类型，修改后跳转到用户个人信息页面
+     */
+    @RequestMapping("/updateUser")
+    public String updateUser(User user,HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+
+        User user1 = (User) session.getAttribute("users");
+
+        int userId = user1.getUserId();
+
+        user.setUserId(userId);
+        userService.updateUser(user);
+
+        if (0 != user1.getUserId() || null != user1.getTel() || null != user1.getPassword() || null != user1.getEmail()) {
+            // 使上一个 session 失效
+            session.invalidate();
+        }
+
+        User user2 = userService.getUserById(userId);
+
+        HttpSession session1 = req.getSession();
+
+        session1.setAttribute("users", user2);
+
+        return "myinfo";
+    }
+
     @RequestMapping("/login1")
     public String login1() {
         return "login";
@@ -143,9 +255,14 @@ public class userController {
 
         map.put("pageSize", "5");
 
-        if (null == map.get("pageNum")) {
+
+        if (null == condition.get("pageNum")){
             map.put("pageNum", "1");
+        } else {
+            map.put("pageNum", condition.get("pageNum"));
         }
+
+
 
         Page list = userService.list(map);
         list.setPageMaxNum(list.getTotal() / list.getPageSize() + 1);
@@ -186,17 +303,30 @@ public class userController {
     @RequestMapping("/getCity1")
     @ResponseBody
     public List<City> getCity1() {
-        List<City> cityList = userService.getStop(0);
 
-        return cityList;
+        return userService.getStop(0);
     }
 
 
     @RequestMapping("/getStop")
     @ResponseBody
-    public List<City> getStop(int cityId) {
+    public JsonBean getStop(int cityId) {
+        JsonBean bean = null;
+
         List<City> cityList = userService.getStop(cityId);
-        return cityList;
+
+        if (cityList.size() > 0){
+            bean = JsonUtils.createJsonBean(1, cityList);
+        } else {
+            bean = JsonUtils.createJsonBean(-1, "错误");
+        }
+        return bean;
+    }
+
+    @RequestMapping("/getStopList")
+    @ResponseBody
+    public List<City> getStopList(int cityId) {
+        return userService.getStop(cityId);
     }
 
 
@@ -265,24 +395,56 @@ public class userController {
         return "ordersubmit";
     }
 
-
+    // 提交订单
     @RequestMapping("/orderInsert")
-    public String orderInsert(Order order) {
+    @ResponseBody
+    public JsonBean orderInsert(Order order) {
+        JsonBean bean = null;
 
-        userService.insertOrder(order);
+        int i = userService.insertOrder(order);
+        if (i > 0){
+            bean = JsonUtils.createJsonBean(1,"下单成功");
 
-        return "redirect:/user/orderTable";
+            return bean;
+        }
+
+        bean = JsonUtils.createJsonBean(-1, "错误");
+
+        return bean;
+    }
+
+    // 订单详情
+    @RequestMapping("/orderMsg")
+    @ResponseBody
+    public JsonBean orderMsg(Order order){
+        JsonBean bean = null;
+        Order order1 = userService.orderMsg(order.getOrderId());
+        if (order1 != null){
+            bean = JsonUtils.createJsonBean(1,order1);
+
+        } else {
+            bean = JsonUtils.createJsonBean(-1, "订单查询失败");
+        }
+        return bean;
     }
 
     //用户还车
     @RequestMapping("/updateOrderStatus")
-    public String updateOrderStatus(Order order) {
+    @ResponseBody
+    public JsonBean updateOrderStatus(Order order) {
 
-        order.setStatus("已归还");
+        JsonBean bean = null;
 
-        userService.updateOrderStatus(order);
+        order.setStatus("处理中");
 
-        return "redirect:/user/orderTable";
+        int i = userService.updateOrderStatus(order);
+        if (i > 0) {
+            bean = JsonUtils.createJsonBean(1,"还车成功，请等待处理");
+            return bean;
+        }else {
+            bean = JsonUtils.createJsonBean(-1, "还车失败，请重试");
+            return bean;
+        }
     }
 
     // 删除已还车的订单

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qfedu.dao.AdminDao">
+    <resultMap id="adminMap" type="com.qfedu.pojo.AdminUser">
+        <id property="adminId" column="id"/>
+        <result property="account" column="account"/>
+        <result property="password" column="password"/>
+    </resultMap>
+
+    <resultMap id="ordersMap" type="com.qfedu.pojo.Order">
+        <id property="orderId" column="id"/>
+        <result property="userId" column="uid"/>
+        <result property="cId" column="cid"/>
+        <result property="getId" column="getid"/>
+        <result property="backId" column="backid"/>
+        <result property="oPrice" column="oprice"/>
+        <result property="status" column="status"/>
+        <result property="reserveDate" column="reserve_date"/>
+        <result property="returnDate" column="return_date"/>
+        <result property="disposeDate" column="dispose_date"/>
+    </resultMap>
+
+    <resultMap id="carMap" type="com.qfedu.pojo.Car">
+        <id property="id" column="id"/>
+        <result property="carName" column="name"/>
+        <result property="carType" column="type"/>
+        <result property="carSitnum" column="sitnum"/>
+        <result property="cityId" column="cid"/>
+        <result property="carPrice" column="price"/>
+        <result property="carNumber" column="number"/>
+        <result property="carPicture" column="picture"/>
+    </resultMap>
+
+    <resultMap id="carMainMap" type="com.qfedu.pojo.CarMain">
+        <id property="id" column="id"/>
+        <result property="carName" column="carName"/>
+        <result property="cityName" column="cityName"/>
+        <result property="carType" column="carType"/>
+        <result property="carSitNum" column="carSitNum"/>
+        <result property="carNumber" column="carNumber"/>
+        <result property="carPrice" column="carPrice"/>
+        <result property="carPicture" column="carPicture"/>
+
+    </resultMap>
+
+    <resultMap id="cityMap" type="com.qfedu.pojo.City">
+        <id property="cityId" column="id"/>
+        <result property="cityName" column="name"/>
+        <result property="pid" column="pid"/>
+    </resultMap>
+
+    <resultMap id="orderDtoMap" type="com.qfedu.pojo.OrderDto">
+        <id property="orderId" column="id"/>
+        <result property="userId" column="uid"/>
+        <result property="tel" column="tel"/>
+        <result property="cId" column="cid"/>
+        <result property="carPicture" column="carPicture"/>
+        <result property="getId" column="getid"/>
+        <result property="backId" column="backid"/>
+        <result property="oPrice" column="oprice"/>
+        <result property="status" column="status"/>
+        <result property="reserveDate" column="reserve_date"/>
+        <result property="returnDate" column="return_date"/>
+        <result property="disposeDate" column="dispose_date"/>
+    </resultMap>
+
+    <resultMap id="orderText" type="com.qfedu.pojo.OrderText">
+        <id property="orderId" column="id"/>
+        <result property="reserveDate" column="reserve_date"/>
+        <result property="returnDate" column="return_date"/>
+        <result property="disposeDate" column="dispose_date"/>
+    </resultMap>
+
+    <resultMap id="UserDtoMap" type="com.qfedu.pojo.UserDto">
+        <id property="userId" column="id"/>
+        <result property="tel" column="tel"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="invitation" column="invitation"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+<!-- 管理员登陆  -->
+    <select id="adminLogin" resultMap="adminMap">
+        select *
+        from sys_adminuser
+        where account = #{account};
+    </select>
+
+<!-- 查询所有订单   -->
+    <select id="AllListOrder" resultMap="orderDtoMap">
+        SELECT o.id,
+               o.uid,
+               u.tel,
+               o.cid,
+               o.getid,
+               o.backid,
+               o.oprice,
+               o.status,
+               o.return_date
+        FROM sys_order o LEFT JOIN sys_user u ON o.uid = u.id order by o.id;
+    </select>
+
+<!-- 模糊查询手机号的所有订单 -->
+    <select id="fuzzyOrder" resultMap="orderDtoMap">
+        SELECT o.id,
+               o.uid,
+               u.tel,
+               o.cid,
+               o.getid,
+               o.backid,
+               o.oprice,
+               o.status,
+               o.return_date
+        FROM sys_order o LEFT JOIN sys_user u ON o.uid = u.id
+        where u.tel LIKE CONCAT(CONCAT('%', #{tel}), '%') order by o.id;
+    </select>
+
+    <!-- 模糊查询订单号的所有订单 -->
+    <select id="fuzzyOrderById" resultMap="orderDtoMap">
+        SELECT o.id,
+               o.uid,
+               u.tel,
+               o.cid,
+               o.getid,
+               o.backid,
+               o.oprice,
+               o.status,
+               o.return_date
+        FROM sys_order o LEFT JOIN sys_user u ON o.uid = u.id
+        where o.id LIKE CONCAT(CONCAT('%', #{orderId}), '%') order by o.id;
+    </select>
+    
+<!-- 获取所有指定状态的订单 -->
+    <select id="appointStatusOrder" resultMap="orderDtoMap">
+        SELECT o.id,
+               o.uid,
+               u.tel,
+               o.cid,
+               o.getid,
+               o.backid,
+               o.oprice,
+               o.status,
+               o.return_date
+        FROM sys_order o LEFT JOIN sys_user u ON o.uid = u.id
+        where o.status = #{status} order by o.id;
+    </select>
+
+<!-- 通过租客电话号获取该租客的所有订单   -->
+    <select id="getOrderByTel" resultMap="orderDtoMap">
+        SELECT o.id,
+               o.uid,
+               u.tel,
+               o.cid,
+               o.getid,
+               o.backid,
+               o.oprice,
+               o.status
+        FROM sys_order o LEFT JOIN sys_user u ON o.uid = u.id where u.tel = #{tel}
+    </select>
+
+<!-- 获取指定订单信息 -->
+    <select id="getOrderById" resultMap="orderDtoMap">
+        SELECT o.id,
+               o.uid,
+               u.tel,
+               o.cid,
+               o.getid,
+               o.backid,
+               o.oprice,
+               o.status,
+               o.reserve_date,
+               o.return_date,
+               o.dispose_date
+        FROM sys_order o LEFT JOIN sys_user u ON o.uid = u.id where o.id = #{id}
+    </select>
+
+    <!-- 获取订单预定时间和还车时间，计算额外租金 -->
+    <select id="carUseTime" resultMap="orderText">
+        select car_sys.sys_order.reserve_date,
+               car_sys.sys_order.return_date
+        from sys_order where id = #{orderId};
+    </select>
+
+<!-- 确认处理订单信息，改变订单状态和订单金额，订单其它信息不改变 -->
+    <update id="updateStatus">
+    UPDATE sys_order
+        SET sys_order.status = #{param1},
+        sys_order.dispose_date = (SELECT NOW()),
+        sys_order.oprice = #{param3}
+            where sys_order.id = #{param2}
+    </update>
+
+<!-- 获取所有车点   -->
+    <select id="getCity" resultMap="cityMap">
+        select *
+        from car_sys.sys_city where car_sys.sys_city.id = #{cityId}
+    </select>
+
+<!-- 通过汽车ID获取汽车信息 -->
+    <select id="getCar" resultMap="carMap">
+        select *
+        from car_sys.sys_car
+        where car_sys.sys_car.id = #{id}
+    </select>
+
+<!-- 获取所有汽车信息 -->
+    <select id="allCar" resultMap="carMainMap">
+        SELECT sys_car.id,
+               sys_car.`name` carName,
+               sys_car.type carType,
+               sys_car.price carPrice,
+               sys_car.sitnum carSitNum,
+               sys_car.number carNumber,
+               sys_city.`name` cityName,
+               sys_car.picture carPicture
+        FROM sys_car
+            LEFT JOIN sys_city
+                ON sys_car.cid = sys_city.id;
+    </select>
+
+<!-- 模糊查询符合条件的汽车 -->
+    <select id="fuzzyCarName" resultMap="carMainMap">
+        SELECT sys_car.id,
+               sys_car.`name` carName,
+               sys_car.type carType,
+               sys_car.price carPrice,
+               sys_car.sitnum carSitNum,
+               sys_car.number carNumber,
+               sys_city.`name` cityName,
+               sys_car.picture carPicture
+        FROM sys_car
+                 LEFT JOIN sys_city
+                           ON sys_car.cid = sys_city.id
+        where sys_car.name LIKE CONCAT(CONCAT('%', #{carName}), '%');
+    </select>
+
+    <!--<select id="fuzzyCarName" resultMap="carMainMap">
+        SELECT * FROM sys_car
+            LEFT JOIN sys_city
+                ON sys_car.cid = sys_city.id
+        WHERE sys_car.name LIKE CONCAT(CONCAT('%', #{carName}), '%');
+    </select>-->
+
+<!-- 获取所有城市 -->
+    <select id="getCityAll" resultMap="cityMap">
+        SELECT sys_city.`name`, sys_city.id FROM sys_city WHERE sys_city.pid > 0
+    </select>
+
+<!-- 添加汽车信息 -->
+    <insert id="goodsAdd">
+        insert into sys_car(name, type, sitnum, cid, price, number, picture)
+        VALUES (#{carName}, #{carType}, #{carSitnum}, #{cityId}, #{carPrice}, #{carNumber}, #{carPicture})
+    </insert>
+
+<!-- 修改某汽车信息 -->
+    <update id="modifyCarById">
+        update sys_car a set
+            a.name= #{carName},
+            a.type= #{carType},
+            a.sitnum= #{carSitnum},
+            a.cid= #{cityId},
+            a.price= #{carPrice},
+            a.number= #{carNumber},
+            a.picture= #{carPicture}
+        where a.id= #{id};
+    </update>
+
+<!-- 获取某汽车信息 -->
+    <select id="getCarMsg" resultMap="carMap">
+        select *
+        from sys_car where id = #{id};
+    </select>
+
+<!-- 获取所有租客信息列表 -->
+    <select id="allUser" resultMap="UserDtoMap">
+        select *
+        from sys_user;
+    </select>
+
+<!-- 模糊查询符合条件的所有租客 -->
+    <select id="fuzzyTel" resultMap="UserDtoMap">
+        SELECT * FROM sys_user WHERE sys_user.tel LIKE CONCAT(CONCAT('%', #{tel}), '%');
+    </select>
+
+<!-- 计算某租客的总租车次数 -->
+    <select id="userRentCarNum" resultType="integer">
+        SELECT sum(sys_order.uid) as sumval FROM sys_order WHERE sys_order.uid = #{id};
+    </select>
+
+<!-- 计算某租客的总租车金额 -->
+    <select id="userRentCarSumPrice" resultType="integer">
+        SELECT sum(sys_order.oprice) as sumval FROM sys_order WHERE sys_order.uid = #{id};
+    </select>
+</mapper>

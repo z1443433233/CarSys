@@ -20,7 +20,7 @@
         <div data-v-67ef3a4a class="layout clear">
             <div data-v-67ef3a4a class="left csdnav">
                 <label data-v-67ef3a4a>
-                    <a data-v-67ef3a4a href="#">你好，${users.tel}</a>
+                    <a data-v-67ef3a4a href="${pageContext.request.contextPath}/user/orderTable">你好，${users.tel}</a>
                     <a data-v-67ef3a4a href="" class="colorRed">/</a>
                     <a data-v-67ef3a4a href="${pageContext.request.contextPath}/user/logout" class="colorRed" style="margin-right: 10px;">[退出]</a>
                 </label>
@@ -103,36 +103,23 @@
             </div>
         </div>
 
-        <div class="layout">
-            <form class="layui-form" action="">
+        <div id="app1" class="layout">
+            <form class="layui-form">
                 <div class="selectCar">
                     <h1 class="carTit">短租自驾</h1>
                     <div class="getCar car">
                         <h3>取车</h3>
                     </div>
-                    <div class="carCom clear">
+                    <div  class="carCom clear">
                         <div class="layui-form-item">
                             <div class="layui-input-inline" style="width: 145px">
-                                <select name="quiz1">
-                                    <option value="1">上海</option>
-                                    <option value="2">广州</option>
-                                    <option value="3">深圳</option>
+                                <select id="getCity" name="quiz1" lay-filter="getCity">
+                                    <option v-for="city in cityList" v-bind:value="city.cityId">{{city.cityName}}</option>
                                 </select>
                             </div>
-                            <div class="layui-input-inline" style="width: 145px">
-                                <select name="quiz2">
-                                    <option value="">门店</option>
-                                    <option value="虹桥火车站接送点">虹桥火车站接送点</option>
-                                    <option value="虹桥机场服务点">虹桥机场服务点</option>
-                                    <option value="虹桥机场T2航站楼店">虹桥机场T2航站楼店</option>
-                                    <option value="虹口足球场地铁站店">虹口足球场地铁站店</option>
+                            <div class="layui-input-inline" id="view" style="width: 145px">
+                                <select name="carShop" id="carShop1">
                                 </select>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label" style="width: 90px">送门上车</label>
-                                <div class="layui-input-block">
-                                    <input type="checkbox" name="close" lay-skin="switch" lay-text="ON|OFF">
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -142,35 +129,17 @@
                     <div class="carCom clear">
                         <div class="layui-form-item">
                             <div class="layui-input-inline" style="width: 145px">
-                                <select name="quiz1">
-                                    <option value="">省市</option>
-                                    <option value="上海">上海</option>
-                                    <option value="广州">广州</option>
-                                    <option value="深圳">深圳</option>
-                                    <option value="杭州">杭州</option>
-                                    <option value="成都">成都</option>
-                                    <option value="武汉">武汉</option>
-                                    <option value="南京">南京</option>
+                                <select id="backCity" name="quiz1" lay-filter="backCity">
+                                    <option v-for="city in cityList" v-bind:value="city.cityId">{{city.cityName}}</option>
                                 </select>
                             </div>
                             <div class="layui-input-inline" style="width: 145px">
-                                <select name="quiz2">
-                                    <option value="">门店</option>
-                                    <option value="虹桥火车站接送点">虹桥火车站接送点</option>
-                                    <option value="虹桥机场服务点">虹桥机场服务点</option>
-                                    <option value="虹桥机场T2航站楼店">虹桥机场T2航站楼店</option>
-                                    <option value="虹口足球场地铁站店">虹口足球场地铁站店</option>
+                                <select name="carShop" id="carShop2">
                                 </select>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label" style="width: 90px">上门取车</label>
-                                <div class="layui-input-block">
-                                    <input type="checkbox" name="close" lay-skin="switch" lay-text="ON|OFF">
-                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="goBtn">去选车</div>
+                    <button id="selectCar" type="button" class="goBtn">去选车</button>
                 </div>
             </form>
         </div>
@@ -354,43 +323,43 @@
                 <div data-v-01e628ca="" class="left footNav">
                     <ul data-v-01e628ca="" class="left">
                         <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=0">预定指南</a>
+                            <a data-v-01e628ca="" href="#">预定指南</a>
                         </li>
                         <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=0">模拟租车</a>
+                            <a data-v-01e628ca="" href="#">模拟租车</a>
                         </li>
                         <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=1&amp;item=6">订单变更</a>
-                        </li>
-                    </ul>
-                    <ul data-v-01e628ca="" class="left">
-                        <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=2">费用说明</a>
-                        </li>
-                        <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=2&amp;item=8">违章处理</a>
-                        </li>
-                        <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=2&amp;item=9">车损处理</a>
+                            <a data-v-01e628ca="" href="#">订单变更</a>
                         </li>
                     </ul>
                     <ul data-v-01e628ca="" class="left">
                         <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=3">取车流程</a>
+                            <a data-v-01e628ca="" href="#">费用说明</a>
                         </li>
                         <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=4">还车流程</a>
+                            <a data-v-01e628ca="" href="#">违章处理</a>
                         </li>
                         <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="helpCenter.html?nav=1&amp;item=7">续租/提前还车</a>
+                            <a data-v-01e628ca="" href="#">车损处理</a>
                         </li>
                     </ul>
                     <ul data-v-01e628ca="" class="left">
                         <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="about.html">关于我们</a>
+                            <a data-v-01e628ca="" href="#">取车流程</a>
                         </li>
                         <li data-v-01e628ca="">
-                            <a data-v-01e628ca="" href="about.html">联系我们</a>
+                            <a data-v-01e628ca="" href="#">还车流程</a>
+                        </li>
+                        <li data-v-01e628ca="">
+                            <a data-v-01e628ca="" href="#">续租/提前还车</a>
+                        </li>
+                    </ul>
+                    <ul data-v-01e628ca="" class="left">
+                        <li data-v-01e628ca="">
+                            <a data-v-01e628ca="" href="#">关于我们</a>
+                        </li>
+                        <li data-v-01e628ca="">
+                            <a data-v-01e628ca="" href="#">联系我们</a>
                         </li> <li data-v-01e628ca="">
                         <a data-v-01e628ca="" target="_blank" href="http://search.51job.com/list/co,c,2264765,0000,10,1.html">诚聘英才</a>
                     </li></ul></div> <div data-v-01e628ca="" id="mobileZuChe" class="left footCode">
@@ -421,7 +390,7 @@
                 <div data-v-01e628ca="" class="item">©2009-2018 Chesudi.com 上海车速递汽车租赁有限公司 All Rights Reserved. 沪ICP备09082566号  </div>
                 <div data-v-01e628ca="" class="item">
                     <a data-v-01e628ca="" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010502003185" target="_blank">
-                        <img data-v-01e628ca="" src="../static/img/gongan.d0289dc.png">沪公网安备 31010502003185号</a>
+                        <img data-v-01e628ca="" src="">沪公网安备 31010502003185号</a>
                 </div>
             </div>
         </div>
@@ -490,7 +459,96 @@
 
 
 </script>
+<script type="text/javascript">
+    var baseUrl = "${pageContext.request.contextPath}/user/";
 
+    layui.use('layer',function () {
+        var layer = layui.layer;
+        $('#selectCar').click(function () {
+            if ($('#carShop1').val() == null){
+                layer.msg("请选择取车地点",{
+                    icon:2,
+                    time:2000
+                })
+            }  else if ($('#carShop2').val() == null){
+                layer.msg("请完善还车地点",{
+                    icon:2,
+                    time:2000
+                })
+            } else {
+                var params = {
+                    getCityId:$("#getCity").val(),
+                    getStopId:$("#carShop1").val(),
+                    backCityId:$("#backCity").val(),
+                    backStopId:$("#carShop2").val()
+                };
+
+                $("#app").load(baseUrl + "shortsort", params);
+            }
+        })
+    })
+
+</script>
+
+<script type="text/javascript">
+    var vm = new Vue({
+        el: '#app1',
+        data: {
+            cityList: [
+                {cityId:1,cityName:'安阳'},
+                {cityId:2,cityName:'鹤壁'},
+                {cityId:3,cityName:'新乡'}
+            ]
+        }
+    });
+
+
+
+    layui.use(['form', 'layer', 'laytpl'], function () {
+        var layer = layui.layer,
+            form = layui.form,
+            laytpl = layui.laytpl;
+
+        form.on('select(getCity)',function (cityId) {
+            $.ajax({
+                url:"${pageContext.request.contextPath}/user/getStop",
+                type:"post",
+                data:{"cityId":cityId.value},
+                // data : {"cityId":cityId},
+                success:function(data){
+                    $("#carShop1").empty();
+                    for (var i = 0; i < data.info.length; i++) {
+                        var cityId = data.info[i].cityId;
+                        var cityName = data.info[i].cityName;
+                        var str = "<option value=" + cityId + ">" + cityName + "</option>";
+                        $("#carShop1").append(str)
+                    }
+                    form.render()
+                }
+            });
+        });
+
+        form.on('select(backCity)',function (cityId) {
+            $.ajax({
+                url:"${pageContext.request.contextPath}/user/getStop",
+                type:"post",
+                data:{"cityId":cityId.value},
+                // data : {"cityId":cityId},
+                success:function(data){
+
+                    $("#carShop2").empty();
+                    for (var i = 0; i < data.info.length; i++) {
+                        var cityId = data.info[i].cityId;
+                        var cityName = data.info[i].cityName;
+                        var str = "<option value=" + cityId + ">" + cityName + "</option>";
+                        $("#carShop2").append(str)
+                    }
+                    form.render()
+                }
+            });
+        });
+    })
+</script>
 
 </body>
 </html>>

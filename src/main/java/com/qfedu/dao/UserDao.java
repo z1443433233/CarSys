@@ -1,9 +1,6 @@
 package com.qfedu.dao;
 
-import com.qfedu.pojo.Car;
-import com.qfedu.pojo.City;
-import com.qfedu.pojo.Order;
-import com.qfedu.pojo.User;
+import com.qfedu.pojo.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,8 +20,13 @@ public interface UserDao {
     // 登录验证的方法
     User login(String tel);
 
+    // 用户修改个人信息
     void updateUser(User user);
 
+    // 通过邮箱和手机号验证用户信息找回密码
+    User getUserByEmailAndTel(User user);
+
+    // 通过用户Id获取用户信息
     User getUserById(int userId);
 
     // 通过汽车Id获取汽车信息
@@ -39,18 +41,27 @@ public interface UserDao {
     // 通过停车点Id获取停车点信息
     City getCity(int cityId);
 
+    // 通过用户Id获取用户的所有订单
     List<Order> getOrder(Map<String,Object> condition);
 
+    // 通过订单ID查询订单详情
+    Order orderMsg(int id);
+
+    // 分页查询用户订单
     List<Order> list(Map<String,Object> condition);
 
+    // 计算用户订单总数
     int listCount(Map<String,Object> condition);
 
     // 通过城市的id与pid 对应，获取停车点
     List<City> getStop(Integer cityId);
 
-    void insertOrder(Order order);
+    // 添加订单
+    int insertOrder(Order order);
 
+    // 删除订单
     void deleteByOrderId(Order order);
 
-    void updateOrderStatus(Order order);
+    // 更新订单
+    int updateOrderStatus(Order order);
 }

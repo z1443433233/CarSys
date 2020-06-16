@@ -20,7 +20,7 @@ public class Car {
     // 汽车座位数
     private int carSitnum;
 
-    // 所属城市Id
+    // 所属车点Id
     private int cityId;
 
     // 租车价格

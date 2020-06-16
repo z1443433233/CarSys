@@ -34,13 +34,23 @@ public class Order {
     // 订单状况
     private String status;
 
+    // 客户预定日期
+    private String reserveDate;
+
+    // 客户还车日期
+    private String returnDate;
+
+    // 订单处理日期
+    private String disposeDate;
+
 
     public Order() {
     }
 
 
-    public Order(int userId, int orderId, int cId, String carName, double oPrice, int getId, String getCityName, int backId, String backCityName, String status) {
+    public Order(int userId, List<Car> cars, int orderId, int cId, String carName, double oPrice, int getId, String getCityName, int backId, String backCityName, String status, String reserveDate, String returnDate, String disposeDate) {
         this.userId = userId;
+        this.cars = cars;
         this.orderId = orderId;
         this.cId = cId;
         this.carName = carName;
@@ -50,48 +60,9 @@ public class Order {
         this.backId = backId;
         this.backCityName = backCityName;
         this.status = status;
-    }
-
-    public Order(int userId, int cId, double oPrice, int getId, int backId, String status) {
-        this.userId = userId;
-        this.cId = cId;
-        this.oPrice = oPrice;
-        this.getId = getId;
-        this.backId = backId;
-        this.status = status;
-    }
-
-
-    public List<Car> getCars() {
-        return cars;
-    }
-
-    public void setCars(List<Car> cars) {
-        this.cars = cars;
-    }
-
-    public String getCarName() {
-        return carName;
-    }
-
-    public void setCarName(String carName) {
-        this.carName = carName;
-    }
-
-    public String getGetCityName() {
-        return getCityName;
-    }
-
-    public void setGetCityName(String getCityName) {
-        this.getCityName = getCityName;
-    }
-
-    public String getBackCityName() {
-        return backCityName;
-    }
-
-    public void setBackCityName(String backCityName) {
-        this.backCityName = backCityName;
+        this.reserveDate = reserveDate;
+        this.returnDate = returnDate;
+        this.disposeDate = disposeDate;
     }
 
     public int getUserId() {
@@ -100,6 +71,14 @@ public class Order {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public List<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
     }
 
     public int getOrderId() {
@@ -118,6 +97,14 @@ public class Order {
         this.cId = cId;
     }
 
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
+    }
+
     public double getoPrice() {
         return oPrice;
     }
@@ -134,6 +121,14 @@ public class Order {
         this.getId = getId;
     }
 
+    public String getGetCityName() {
+        return getCityName;
+    }
+
+    public void setGetCityName(String getCityName) {
+        this.getCityName = getCityName;
+    }
+
     public int getBackId() {
         return backId;
     }
@@ -142,11 +137,43 @@ public class Order {
         this.backId = backId;
     }
 
+    public String getBackCityName() {
+        return backCityName;
+    }
+
+    public void setBackCityName(String backCityName) {
+        this.backCityName = backCityName;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getReserveDate() {
+        return reserveDate;
+    }
+
+    public void setReserveDate(String reserveDate) {
+        this.reserveDate = reserveDate;
+    }
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public String getDisposeDate() {
+        return disposeDate;
+    }
+
+    public void setDisposeDate(String disposeDate) {
+        this.disposeDate = disposeDate;
     }
 }

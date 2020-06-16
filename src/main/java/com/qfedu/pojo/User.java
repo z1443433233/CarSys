@@ -16,15 +16,18 @@ public class User {
 
     private String invitation;
 
+    private int status;
+
     public User() {
     }
 
-    public User(int userId, String tel, String password, String email, String invitation) {
+    public User(int userId, String tel, String password, String email, String invitation, int status) {
         this.userId = userId;
         this.tel = tel;
         this.password = password;
         this.email = email;
         this.invitation = invitation;
+        this.status = status;
     }
 
     public int getUserId() {
@@ -65,5 +68,13 @@ public class User {
 
     public void setInvitation(String invitation) {
         this.invitation = invitation;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

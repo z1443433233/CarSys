@@ -100,16 +100,32 @@ public class UserServiceImpl implements UserService {
         return userDao.getCar(id);
     }
 
-    public void insertOrder(Order order) {
-        userDao.insertOrder(order);
+    public int insertOrder(Order order) {
+        return userDao.insertOrder(order);
     }
 
     public void deleteByOrderId(Order order) {
         userDao.deleteByOrderId(order);
     }
 
-    public void updateOrderStatus(Order order) {
-        userDao.updateOrderStatus(order);
+    public int updateOrderStatus(Order order) {
+        return userDao.updateOrderStatus(order);
+    }
+
+    public Order orderMsg(int id) {
+        Order order = userDao.orderMsg(id);
+
+        order.setCarName(userDao.getCar(order.getcId()).getCarName());
+        order.setGetCityName(userDao.getCity(order.getGetId()).getCityName());
+        order.setBackCityName(userDao.getCity(order.getBackId()).getCityName());
+
+
+        return order;
+    }
+
+
+    public User getUserByEmailAndTel(User user) {
+        return userDao.getUserByEmailAndTel(user);
     }
 
 }

@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="v-on" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="v-bind" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -12,6 +14,7 @@
     <script src="${pageContext.request.contextPath}/resources/js/bootstrap.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/layui/layui.js"></script>
     <script src="${pageContext.request.contextPath}/resources/layui/css/layui.css"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 </head>
 <body>
@@ -21,7 +24,7 @@
             <div data-v-67ef3a4a class="left csdnav">
                 <c:if test="${null != users.tel}">
                     <label data-v-67ef3a4a v-if="denglu">
-                        <a data-v-67ef3a4a href="#">你好，${users.tel}</a>
+                        <a data-v-67ef3a4a href="${pageContext.request.contextPath}/user/orderTable">你好，${users.tel}</a>
                         <input type="text" id="tel" hidden value="1">
                         <a data-v-67ef3a4a href="#" class="colorRed">/</a>
                         <a data-v-67ef3a4a href="${pageContext.request.contextPath}/user/logout" class="colorRed"
@@ -33,19 +36,12 @@
                         <a data-v-67ef3a4a href="${pageContext.request.contextPath}/user/login1" class="colorRed">登录</a>
                         <input type="text" id="tel" hidden value="-1">
                         <a data-v-67ef3a4a href="" class="colorRed">/</a>
-                        <a data-v-67ef3a4a href="insert.jsp" class="colorRed" style="margin-right: 10px;">注册</a>
+                        <a data-v-67ef3a4a href="${pageContext.request.contextPath}/user/register" class="colorRed" style="margin-right: 10px;">注册</a>
                     </label>
                 </c:if>
 
-
-                <a data-v-67ef3a4a="" href="#mobileZuChe">手机租车</a>
-                <a data-v-67ef3a4a="" href="helpCenter.html">帮助中心</a>
             </div>
             <div data-v-67ef3a4a="" class="right phone">
-                <div data-v-67ef3a4a="" class="typeTab">
-                    <a data-v-67ef3a4a="" href="index.jsp" style="color: rgb(199, 0, 11);">中文</a>&nbsp;/&nbsp;
-                    <a data-v-67ef3a4a="" href="../en/index.html">English</a>
-                </div>
                 <div data-v-67ef3a4a="" class="menu">
                     <a data-v-67ef3a4a="" href="${pageContext.request.contextPath}/user/orderTable">我的车速递</a>
                 </div>
@@ -63,7 +59,7 @@
             <div data-v-39f7f629="" class="left logo">
                 <a data-v-39f7f629="" href="index.jsp">
                     <img data-v-39f7f629=""
-                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKYAAAAqCAYAAAA5+iDUAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA3FpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1NWY1ODZmZS0yNGNjLTg2NGMtODFmMi0yNjYzODhhNjczYTMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QjgwRkFGQ0U4MzFDMTFFNzkzM0FCMEZGM0ZFMDMzQ0UiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QjgwRkFGQ0Q4MzFDMTFFNzkzM0FCMEZGM0ZFMDMzQ0UiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOmU1YTliNDEzLTU2NDEtMDc0MS05OTA2LTZhNDg5YjU1NzNlYyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo1NWY1ODZmZS0yNGNjLTg2NGMtODFmMi0yNjYzODhhNjczYTMiLz4gPC9y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">
+                         src="${pageContext.request.contextPath}/resources/images/csd.png">
                 </a>
             </div>
             <div data-v-39f7f629="" class="left navCom">
@@ -144,67 +140,47 @@
             </div>
         </div>
 
-        <div class="layout">
-            <form class="layui-form">
-                <div class="selectCar">
-                    <h1 class="carTit">短租自驾</h1>
-                    <div class="getCar car">
-                        <h3>取车</h3>
-                    </div>
-                    <div class="carCom clear">
-                        <div class="layui-form-item" lay-filter="getCity">
-                            <div class="layui-input-inline" style="width: 145px" >
-                                    <select id="dqsel" name="dqsel" lay-filter="dqsel">
-                                        <option name="cityId" value="-1">请选择</option>
-                                        <option name="cityId" value="1">上海</option>
-                                        <option name="cityId" value="2">广州</option>
-                                        <option name="cityId" value="3">深圳</option>
-                                    </select>
-                            </div>
-                            <div class="layui-input-inline" style="width: 145px">
-                                <label>
-                                    <select id="bmsel" name="bmsel"  lay-filter="bmsel">
-                                    </select>
-                                </label>
-
-                            </div>
+        <div id="app1" class="layout">
+                <form class="layui-form">
+                    <div class="selectCar">
+                        <h1 class="carTit">短租自驾</h1>
+                        <div class="getCar car">
+                            <h3>取车</h3>
+                        </div>
+                        <div  class="carCom clear">
                             <div class="layui-form-item">
-                                <label class="layui-form-label" style="width: 90px">送门上车</label>
-                                <div class="layui-input-block">
-                                    <input type="checkbox" name="close" lay-skin="switch" lay-text="ON|OFF">
+                                <div class="layui-input-inline" style="width: 145px">
+                                    <select id="getCity" name="quiz1" lay-filter="getCity">
+                                        <option v-for="city in cityList" v-bind:value="city.cityId">{{city.cityName}}</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline" id="view" style="width: 145px">
+                                    <select name="carShop" id="carShop1">
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="getCar car">
-                        <h3>还车</h3>
-                    </div>
-                    <div class="carCom clear">
-                        <div class="layui-form-item">
-                            <div class="layui-input-inline" style="width: 145px">
-                                <select id="hcc">
-                                    <option>请选择</option>
-                                    <option v-for="mc in mcs" :value="mc.id">{{mc.name}}</option>
-                                </select>
-                            </div>
-                            <div class="layui-input-inline" style="width: 145px">
-                                <select id="hcs">
-                                    <option>请选择</option>
-                                    <option v-for="city in citys" :value="city.id">{{city.name}}</option>
-                                </select>
-                            </div>
+                        <div class="getCar car">
+                            <h3>还车</h3>
+                        </div>
+                        <div class="carCom clear">
                             <div class="layui-form-item">
-                                <label class="layui-form-label" style="width: 90px">上门取车</label>
-                                <div class="layui-input-block">
-                                    <input type="checkbox" name="close" lay-skin="switch" lay-text="ON|OFF">
+                                <div class="layui-input-inline" style="width: 145px">
+                                    <select id="backCity" name="quiz1" lay-filter="backCity">
+                                        <option v-for="city in cityList" v-bind:value="city.cityId">{{city.cityName}}</option>
+                                    </select>
+                                </div>
+                                <div class="layui-input-inline" style="width: 145px">
+                                    <select name="carShop" id="carShop2">
+                                    </select>
                                 </div>
                             </div>
                         </div>
+                        <button id="selectCar" type="button" class="goBtn">去选车</button>
                     </div>
-                    <button class="goBtn">去选车</button>
-                </div>
-            </form>
+                </form>
         </div>
+
     </div>
 
     <div>
@@ -399,43 +375,43 @@
                     <div data-v-01e628ca="" class="left footNav">
                         <ul data-v-01e628ca="" class="left">
                             <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=0">预定指南</a>
+                                <a data-v-01e628ca="" href="#">预定指南</a>
                             </li>
                             <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=0">模拟租车</a>
+                                <a data-v-01e628ca="" href="#">模拟租车</a>
                             </li>
                             <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=1&amp;item=6">订单变更</a>
-                            </li>
-                        </ul>
-                        <ul data-v-01e628ca="" class="left">
-                            <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=2">费用说明</a>
-                            </li>
-                            <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=2&amp;item=8">违章处理</a>
-                            </li>
-                            <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=2&amp;item=9">车损处理</a>
+                                <a data-v-01e628ca="" href="#">订单变更</a>
                             </li>
                         </ul>
                         <ul data-v-01e628ca="" class="left">
                             <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=3">取车流程</a>
+                                <a data-v-01e628ca="" href="#">费用说明</a>
                             </li>
                             <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=0&amp;item=4">还车流程</a>
+                                <a data-v-01e628ca="" href="#">违章处理</a>
                             </li>
                             <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="helpCenter.html?nav=1&amp;item=7">续租/提前还车</a>
+                                <a data-v-01e628ca="" href="#">车损处理</a>
                             </li>
                         </ul>
                         <ul data-v-01e628ca="" class="left">
                             <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="about.html">关于我们</a>
+                                <a data-v-01e628ca="" href="#">取车流程</a>
                             </li>
                             <li data-v-01e628ca="">
-                                <a data-v-01e628ca="" href="about.html">联系我们</a>
+                                <a data-v-01e628ca="" href="#">还车流程</a>
+                            </li>
+                            <li data-v-01e628ca="">
+                                <a data-v-01e628ca="" href="#">续租/提前还车</a>
+                            </li>
+                        </ul>
+                        <ul data-v-01e628ca="" class="left">
+                            <li data-v-01e628ca="">
+                                <a data-v-01e628ca="" href="#">关于我们</a>
+                            </li>
+                            <li data-v-01e628ca="">
+                                <a data-v-01e628ca="" href="#">联系我们</a>
                             </li>
                             <li data-v-01e628ca="">
                                 <a data-v-01e628ca="" target="_blank"
@@ -476,7 +452,7 @@
                         <a data-v-01e628ca=""
                            href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010502003185"
                            target="_blank">
-                            <img data-v-01e628ca="" src="../static/img/gongan.d0289dc.png">沪公网安备 31010502003185号</a>
+                            <img data-v-01e628ca="" src="">沪公网安备 31010502003185号</a>
                     </div>
                 </div>
             </div>
@@ -535,48 +511,100 @@
             layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
         });
 
-
-        form.on('select(dqsel)',function (data) {
-
-            getCityId();
-
-            function getCityId() {
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/user/getStop",
-                    type: "post",
-                    data: "cityId=" + data.value,
-                    success: function (data) {
-                        $("#bmsel").empty();
-                        if (data.length > 0) {
-                            for (var i = 0; i < data.length; i++) {
-                                var cityId = data[i].cityId;
-                                var cityName = data[i].cityName;
-                                var str = "<option value=" + cityId + ">" + cityName + "</option>";
-                                $("#bmsel").append(str)
-                            }
-                        }
-                    }
-                });
-
-            }
-
-            form.render('select');
-        });
-
-
     });
 
 
 </script>
 
-<%--<script>--%>
+<script type="text/javascript">
+    var baseUrl = "${pageContext.request.contextPath}/user/";
 
-<%--    layui.use(['form'], function () {--%>
-<%--        var form = layui.form;--%>
-<%--        --%>
-<%--    });--%>
+    layui.use('layer',function () {
+        var layer = layui.layer;
+        $('#selectCar').click(function () {
+            if ($('#carShop1').val() == null){
+                layer.msg("请选择取车地点",{
+                    icon:2,
+                    time:2000
+                })
+            }  else if ($('#carShop2').val() == null){
+                layer.msg("请完善还车地点",{
+                    icon:2,
+                    time:2000
+                })
+            } else {
+                var params = {
+                    getCityId:$("#getCity").val(),
+                    getStopId:$("#carShop1").val(),
+                    backCityId:$("#backCity").val(),
+                    backStopId:$("#carShop2").val()
+                };
+
+                $("#app").load(baseUrl + "shortsort", params);
+            }
+        })
+    })
+
+</script>
+
+<script type="text/javascript">
+    var vm = new Vue({
+        el: '#app1',
+        data: {
+            cityList: [
+                {cityId:1,cityName:'安阳'},
+                {cityId:2,cityName:'鹤壁'},
+                {cityId:3,cityName:'新乡'}
+            ]
+        }
+    });
 
 
-<%--</script>--%>
+
+    layui.use(['form', 'layer', 'laytpl'], function () {
+        var layer = layui.layer,
+            form = layui.form,
+            laytpl = layui.laytpl;
+
+        form.on('select(getCity)',function (cityId) {
+            $.ajax({
+                url:"${pageContext.request.contextPath}/user/getStop",
+                type:"post",
+                data:{"cityId":cityId.value},
+                // data : {"cityId":cityId},
+                success:function(data){
+                    $("#carShop1").empty();
+                    for (var i = 0; i < data.info.length; i++) {
+                        var cityId = data.info[i].cityId;
+                        var cityName = data.info[i].cityName;
+                        var str = "<option value=" + cityId + ">" + cityName + "</option>";
+                        $("#carShop1").append(str)
+                    }
+                    form.render()
+                }
+            });
+        });
+
+        form.on('select(backCity)',function (cityId) {
+            $.ajax({
+                url:"${pageContext.request.contextPath}/user/getStop",
+                type:"post",
+                data:{"cityId":cityId.value},
+                // data : {"cityId":cityId},
+                success:function(data){
+
+                    $("#carShop2").empty();
+                    for (var i = 0; i < data.info.length; i++) {
+                        var cityId = data.info[i].cityId;
+                        var cityName = data.info[i].cityName;
+                        var str = "<option value=" + cityId + ">" + cityName + "</option>";
+                        $("#carShop2").append(str)
+                    }
+                    form.render()
+                }
+            });
+        });
+    })
+</script>
 </body>
 </html>
